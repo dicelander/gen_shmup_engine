@@ -17,6 +17,7 @@
 #define MAX_SHOTS 10
 
 #define MAX_BEHAVIOURS 30
+#define MAX_ACTIONS 30
 #define MAX_PATHS 30
 #define MAX_PATHS_ENTRIES 30
 #define MAX_SWITCH_TIMES 30
@@ -25,10 +26,10 @@
 
 #define MAX_EVENTS 300
 
-#define LEFT_EDGE 0
-#define RIGHT_EDGE 320
-#define TOP_EDGE 0
-#define BOTTOM_EDGE 224
+#define LEFT_EDGE FIX16(0)
+#define RIGHT_EDGE FIX16(320)
+#define TOP_EDGE FIX16(0)
+#define BOTTOM_EDGE FIX16(224)
 #define DIAGONAL 0.71
 
 #define PLAYER_IDLE 0
@@ -66,12 +67,12 @@ typedef enum {enemy_shoot, change_movement, change_speed, change_direction, do_n
 /* Entity Structure */
 
 typedef struct {
-    int x;
-    int y;
-    int offset_x;
-    int offset_y;
-    int w;
-    int h;
+    fix16 x;
+    fix16 y;
+    fix16 offset_x;
+    fix16 offset_y;
+    fix16 w;
+    fix16 h;
     //int weapon_x;
     //int weapon_y;
     fix16 velx;
@@ -144,7 +145,7 @@ void reviveEntity(Entity* e);
 
 int collideEntities(Entity* a, Entity* b);
 
-void spawnEnemy(Enemies* enemies, u16 type, u16 path, s16 pos_x, s16 pos_y, Pathing* Behaviour);
+void spawnEnemy(Enemies* enemies, u16 type, u16 path, s16 pos_x, s16 pos_y, const Pathing* Behaviour);
 
 void shoot(Shots* shots, Entity* player);
 

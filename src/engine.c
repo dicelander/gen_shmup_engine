@@ -61,7 +61,7 @@ int collideEntities(Entity* a, Entity* b) {
     return (a->x + a->offset_x < b->x + b->offset_x + b->w && a->x + a->offset_x + a->w > b->x + b->offset_x && a->y + a->offset_y < b->y + b->offset_y + b->h && a->y + a->offset_y + a->h >= b->y + b->offset_y);
 };
 
-void spawnEnemy(Enemies* enemies, u16 type, u16 path, s16 pos_x, s16 pos_y, Pathing* Behaviour) {
+void spawnEnemy(Enemies* enemies, u16 type, u16 path, s16 pos_x, s16 pos_y, const Pathing* Behaviour) {
     int i = 0;
     VDP_drawText("SPAWN_ENEMY", 0, 6);
     if (enemies->enemiesOnScreen < MAX_ENEMIES) {
@@ -71,8 +71,8 @@ void spawnEnemy(Enemies* enemies, u16 type, u16 path, s16 pos_x, s16 pos_y, Path
         }
         enemies->enemy[i].x = pos_x;
         enemies->enemy[i].y = pos_y;
-        enemies->enemy[i].w = 16;
-        enemies->enemy[i].h = 16;
+        enemies->enemy[i].w = FIX16(16);
+        enemies->enemy[i].h = FIX16(16);
         enemies->enemy[i].velx = 0;
         enemies->enemy[i].vely = 0;
         enemies->enemy[i].health = 1;
@@ -93,20 +93,31 @@ void spawnEnemy(Enemies* enemies, u16 type, u16 path, s16 pos_x, s16 pos_y, Path
 };
 
 void shoot(Shots* shots, Entity* player){
+//    KLog("Shot function called");
+//    KLog_U1("shots->shotsOnScreen = ", shots->shotsOnScreen);
     int i = 0;
     if (shots->shotsOnScreen < 2*MAX_SHOTS) {
         while (shots->playerShot[i].health > 0) {
             i++;
         }
-        shots->playerShot[i].x = player->x+8;
+//        KLog_U1("Shots Function [i]  = ", i);
+        shots->playerShot[i].x = player->x+FIX16(8);
+//        KLog_f1("player->x = ", player->x);
+//        KLog_f1("shots->playerShot[i].x = ", shots->playerShot[i].x);
         shots->playerShot[i].y = player->y;
-        shots->playerShot[i].w = 8;
-        shots->playerShot[i].h = 8;
+//        KLog_f1("player->y = ", player->y);
+//        KLog_f1("shots->playerShot[i].y = ", shots->playerShot[i].y);
+        shots->playerShot[i].w = FIX16(8);
+//        KLog_f1("shots->playerShot[i].w = ", shots->playerShot[i].w);
+        shots->playerShot[i].h = FIX16(8);
+//        KLog_f1("shots->playerShot[i].h = ", shots->playerShot[i].h);
         //        reviveEntity(&shots[i]);
         shots->playerShot[i].vely = FIX16(-5);
         shots->playerShot[i].velx = 0;
         shots->playerShot[i].health = 1;
-        shots->playerShot[i].sprite = SPR_addSprite(&peashtr,shots->playerShot[i].x,shots->playerShot[i].y,TILE_ATTR(PAL1,0,FALSE,FALSE));
+        shots->playerShot[i].sprite = SPR_addSprite(&peashtr,fix16ToInt(shots->playerShot[i].x),fix16ToInt(shots->playerShot[i].y),TILE_ATTR(PAL1,0,FALSE,FALSE));
+        
+        KLog_U2("Shot position on screen x = ", fix16ToInt(shots->playerShot[i].x), ", y = ", fix16ToInt(shots->playerShot[i].y));
         shots->shotsOnScreen++;
     }
     //    if (nShotsOnScreen < MAX_SHOTS) {
@@ -125,12 +136,16 @@ int sign(int x) {
 }
 
 void getSinCos(int dx, int dy, fix16 sincos[2]) {
-    while (dx > 31 || dy > 31) {
-        dx <<= 1;
-        dy <<= 1;
+    while (abs(dx) > 31 || abs(dy) > 31) {
+        
+//        KLog_S2("sc dx = ", dx, " sc dy = ", dy);
+        
+        dx >>= 1;
+        dy >>= 1;
     }
-    sincos[0] = sign(dy)*f16sin[dx][dy];
-    sincos[1] = sign(dx)*f16sin[dy][dx];
+//    KLog_S2("sc dx = ", dx, " sc dy = ", dy);
+    sincos[0] = sign(dy)*f16sin[abs(dx)][abs(dy)];
+    sincos[1] = sign(dx)*f16sin[abs(dy)][abs(dx)];
 }
 
 void enemyShoot(Shots* shots, Entity* enemy){
@@ -143,14 +158,14 @@ void enemyShoot(Shots* shots, Entity* enemy){
         fix16 sincos[2];
         shots->enShot[i].x = enemy->x;
         shots->enShot[i].y = enemy->y;
-        shots->enShot[i].w = 8;
-        shots->enShot[i].h = 8;
-        getSinCos(enemy->x - player->x,enemy->y - player->y,sincos);
+        shots->enShot[i].w = FIX16(8);
+        shots->enShot[i].h = FIX16(8);
+        getSinCos(fix16ToInt(enemy->x - player->x),fix16ToInt(enemy->y - player->y),sincos);
         //        reviveEntity(&shots[i]);
         shots->enShot[i].vely = fix16Mul(sincos[0], FIX16(1));
         shots->enShot[i].velx = fix16Mul(sincos[1], FIX16(1));
         shots->enShot[i].health = 1;
-        shots->enShot[i].sprite = SPR_addSprite(&peashtr,shots->enShot[i].x,shots->enShot[i].y,TILE_ATTR(PAL1,0,FALSE,FALSE));
+        shots->enShot[i].sprite = SPR_addSprite(&peashtr,fix16ToInt(shots->enShot[i].x),fix16ToInt(shots->enShot[i].y),TILE_ATTR(PAL1,0,FALSE,FALSE));
         shots->shotsOnScreen++;
     }
 }
@@ -217,25 +232,34 @@ void moveShots(Shots* shots) {
     u16 i = 0;
     for (i = 0; i < MAX_SHOTS; i++) {
         if(shots->playerShot[i].health > 0) {
-            if(shots->playerShot[i].y + shots->playerShot[i].h < TOP_EDGE || (shots->playerShot[i].x + shots->playerShot[i].w) < LEFT_EDGE || shots->playerShot[i].x > RIGHT_EDGE) {
+            if(fix16Add(shots->playerShot[i].y, shots->playerShot[i].h) < TOP_EDGE || (shots->playerShot[i].x + shots->playerShot[i].w) < LEFT_EDGE || shots->playerShot[i].x > RIGHT_EDGE) {
+//                KLog_f1("shots->playerShot[i].y + shots->playerShot[i].h = ", fix16Add(shots->playerShot[i].y, shots->playerShot[i].h));
+//                KLog_f1("TOP_EDGE (<)", TOP_EDGE);
+//                KLog_f1("shots->playerShot[i].x + shots->playerShot[i].w = ", fix16Add(shots->playerShot[i].x, shots->playerShot[i].w));
+//                KLog_f1("LEFT_EDGE (<)", LEFT_EDGE);
+//                KLog_f1("shots->playerShot[i].x = ", shots->playerShot[i].x);
+//                KLog_f1("RIGHT_EDGE (>)", RIGHT_EDGE);
                 killEntity(&shots->playerShot[i]);
                 shots->shotsOnScreen--;
+//                KLog_U2("Player shot on index ", i, " removed by moveShots, shotOnScreen now at ", shots->shotsOnScreen);
             }
             else {
-                shots->playerShot[i].x += fix16ToRoundedInt(shots->playerShot[i].velx);
-                shots->playerShot[i].y += fix16ToRoundedInt(shots->playerShot[i].vely);
-                SPR_setPosition(shots->playerShot[i].sprite, shots->playerShot[i].x, shots->playerShot[i].y);
+                shots->playerShot[i].x += shots->playerShot[i].velx;
+                shots->playerShot[i].y += shots->playerShot[i].vely;
+                SPR_setPosition(shots->playerShot[i].sprite, fix16ToInt(shots->playerShot[i].x), fix16ToInt(shots->playerShot[i].y));
             }
         }
         if(shots->enShot[i].health > 0) {
-            if(shots->enShot[i].y > BOTTOM_EDGE || (shots->enShot[i].x + shots->enShot[i].w) < LEFT_EDGE || shots->enShot[i].x > RIGHT_EDGE || shots->enShot) {
-                killEntity(&shots->playerShot[i]);
+            if(shots->enShot[i].y > BOTTOM_EDGE || (shots->enShot[i].x + shots->enShot[i].w) < LEFT_EDGE || shots->enShot[i].x > RIGHT_EDGE) {
+//                KLog("Shot will be destroyed due to leaving screen, the following condition is true:");
+//                KLog_U3("shots->enShot[i].y > BOTTOM_EDGE", shots->enShot[i].y > BOTTOM_EDGE, "(shots->enShot[i].x + shots->enShot[i].w) < LEFT_EDGE", (shots->enShot[i].x + shots->enShot[i].w) < LEFT_EDGE, "shots->enShot[i].x > RIGHT_EDGE", shots->enShot[i].x > RIGHT_EDGE);
+                killEntity(&shots->enShot[i]);
                 shots->shotsOnScreen--;
-            }
-            else {
-                shots->enShot[i].x += fix16ToRoundedInt(shots->enShot[i].velx);
-                shots->enShot[i].y += fix16ToRoundedInt(shots->enShot[i].vely);
-                SPR_setPosition(shots->enShot[i].sprite, shots->enShot[i].x, shots->enShot[i].y);
+            } else {
+//                KLog("Updating enemy shot positions");
+                shots->enShot[i].x += shots->enShot[i].velx;
+                shots->enShot[i].y += shots->enShot[i].vely;
+                SPR_setPosition(shots->enShot[i].sprite, fix16ToInt(shots->enShot[i].x), fix16ToInt(shots->enShot[i].y));
             }
         }
     }
@@ -244,8 +268,8 @@ void moveShots(Shots* shots) {
 //                killEntity(&shots->enShot[i]);
 //                shots->shotsOnScreen--;
 //            } else {
-//                shots->enShot[i].x += fix16ToRoundedInt(shots->enShot[i].velx);
-//                shots->enShot[i].y += fix16ToRoundedInt(shots->enShot[i].vely);
+//                shots->enShot[i].x += fix16ToInt(shots->enShot[i].velx);
+//                shots->enShot[i].y += fix16ToInt(shots->enShot[i].vely);
 //                SPR_setPosition(shots->enShot[i].sprite, shots->enShot[i].x, shots->enShot[i].y);
 //            }
 //    }
@@ -290,11 +314,11 @@ fix16 diagonalAdjust(fix16 value) {
 void movePlayer(Entity* player) {
     
     if((player->velx != 0) & (player->vely != 0)) {
-        player->x += fix16ToRoundedInt(fix16Mul(player->velx, diagonal()));
-        player->y += fix16ToRoundedInt(fix16Mul(player->vely, diagonal()));
+        player->x += fix16Mul(player->velx, diagonal());
+        player->y += fix16Mul(player->vely, diagonal());
     } else {
-        player->x += fix16ToRoundedInt(player->velx);
-        player->y += fix16ToRoundedInt(player->vely);
+        player->x += player->velx;
+        player->y += player->vely;
     }
     
     if (player->x + player->offset_x < LEFT_EDGE) player->x = LEFT_EDGE - player->offset_x;
@@ -304,7 +328,7 @@ void movePlayer(Entity* player) {
         player->y = BOTTOM_EDGE - (player->h + player->offset_y);
     }
     
-    SPR_setPosition(player->sprite, player->x, player->y);
+    SPR_setPosition(player->sprite, fix16ToInt(player->x), fix16ToInt(player->y));
 }
 
 //u16 getShotsOnScreen() {
