@@ -14,7 +14,6 @@
 #include "../res/resources.h"
 
 #define MAX_ENEMIES 10
-#define MAX_SHOTS 10
 
 #define MAX_BEHAVIOURS 30
 #define MAX_ACTIONS 30
@@ -60,10 +59,6 @@
 #define SPAWN_ENEMY1_1 1
 #define SPAWN_ENEMY1_2 2
 
-/* Enemy Pathing Structure */
-
-typedef enum {enemy_shoot, change_movement, change_speed, change_direction, do_nothing, remove_enemy} actions;
-
 /* Entity Structure */
 
 typedef struct {
@@ -85,22 +80,8 @@ typedef struct {
     int pathstate;
     int timer;
     int direction;
-    u16 state; //alive = 1, //dead = 0; explosion = 2;
-    const actions* actionpointer;
-    const fix16* vel_xpointer;
-    const fix16* vel_ypointer;
-    const u16* directionpointer;
+    u16 status; //alive = 1, //dead = 0; explosion = 2;
 } Entity;
-
-typedef struct {
-    u16 switchtimes[MAX_SWITCH_TIMES];
-    actions action[MAX_SWITCH_TIMES];
-    fix16 vel_x[MAX_SWITCH_TIMES];
-    fix16 vel_y[MAX_SWITCH_TIMES];
-    u16 direction[MAX_SWITCH_TIMES];
-} Pathing;
-
-/* enemy actions enum */
 
 /* Level Structure */
 
@@ -111,20 +92,7 @@ typedef struct Level {
     u16 currentEvent;
 } Level;
 
-/*Enemy Attributes*/
-
-typedef struct Enemies {
-    Entity enemy[MAX_ENEMIES];
-    u16 enemiesOnScreen;
-} Enemies;
-
 /*Player shots attributes*/
-
-typedef struct Shots {
-    Entity playerShot[MAX_SHOTS];
-    Entity enShot[MAX_SHOTS];
-    u16 shotsOnScreen;
-} Shots;
 
 //typedef struct {
 //    u16 dx;
@@ -133,13 +101,7 @@ typedef struct Shots {
 //    fix16 cos;
 //} Angle;
 
-/*Enemy shots attributes*/
-
-//typedef void JoyEventCallback(u16 joy, u16 changed, u16 state, Shots* shots, Entity* player);
-
 /* Diagonal Speed */
-
-fix16 teste();
 
 void killEntity(Entity* e);
 
@@ -147,24 +109,22 @@ void reviveEntity(Entity* e);
 
 int collideEntities(Entity* a, Entity* b);
 
-void spawnEnemy(Enemies* enemies, u16 type, u16 path, s16 pos_x, s16 pos_y, const Pathing* Behaviour);
+//void initShots(Shots* shots);
 
-void initShots(Shots* shots);
+//void moveShots(Shots* shots);
 
-void setPointerShots(Shots *shots);
+//void enemyShoot(Shots* shots, Entity* enemy);
 
-Shots *getPointerShots();
-
-void moveShots(Shots* shots);
-
-void enemyShoot(Shots* shots, Entity* enemy);
-
-void enShotCollisions (Enemies* enemies, Shots* shots);
-
-void enPlayerCollisions (Enemies* enemies, Entity* player);
+//void enShotCollisions (Enemies* enemies, Shots* shots);
+//
+//void enPlayerCollisions (Enemies* enemies, Entity* player);
 
 int sign(int x);
 
 void getSinCos(int dx, int dy, fix16 sincos[2]);
+
+//void PL_setShotsPtr(Shots *shots);
+
+//Shots *PL_getShotsPtr();
 
 #endif /* engine_h */

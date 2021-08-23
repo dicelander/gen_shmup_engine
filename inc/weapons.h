@@ -12,6 +12,6 @@
 #include "player.h"
 #include "engine.h"
 
-void wpn_peaShooter(Shots* shots, Player* player);
+void wpn_peaShooter(Pl_Shots* shots, Player* player);
 
 #endif /* weapons_h */
