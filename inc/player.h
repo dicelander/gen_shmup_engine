@@ -9,6 +9,7 @@
 #define player_h
 
 #include <genesis.h>
+#include "../res/resources.h"
 
 #define MAX_PLAYER_SHOTS 3
 #define ALIVE 1
@@ -32,7 +33,7 @@ typedef struct Pl_Shot {
     u16 direction;
     u8 health;
     u16 timer;
-    u16 status;
+    u8 status;
     Sprite* sprite;
     struct shot_type* type;
 } Pl_Shot;
@@ -52,6 +53,8 @@ struct Player {
     fix16 vel_x;
     fix16 vel_y;
     s8 health;
+    u8 timer;
+    u8 status;
     Sprite* sprite;
     void (*eqweapon)(struct Pl_Shots* shots, Player *player); //function pointer to weapon player is currently using
 };
@@ -69,5 +72,7 @@ Pl_Shots *PL_getShotsPtr();
 void PL_setShotsPtr(Pl_Shots *shots);
 
 void PL_moveShots(Pl_Shots* shots);
+
+void PL_explode(Player* player);
 
 #endif /* player_h */

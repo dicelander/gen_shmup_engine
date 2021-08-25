@@ -22,7 +22,7 @@ bool collideENPlayer(Enemy* enemy, Player* player) {
 };
 
 bool collideENShotPlayer(En_Shot* shot, Player* player) {
-    return (shot->pos_x + shot->offset_x < player->pos_x + player->offset_x + player->width && shot->pos_x + shot->offset_x + shot->width > player->pos_x + player->offset_x && shot->pos_y + shot->offset_y < player->pos_y + player->offset_y + player->height && shot->pos_y + shot->offset_y + shot->height >= player->pos_y + player->offset_y);
+    return ((shot->pos_x + shot->offset_x) < ((player->pos_x + player->offset_x) + player->width) && ((shot->pos_x + shot->offset_x) + shot->width) > (player->pos_x + player->offset_x) && (shot->pos_y + shot->offset_y) < ((player->pos_y + player->offset_y) + player->height) && ((shot->pos_y + shot->offset_y) + shot->height) >= (player->pos_y + player->offset_y));
 };
 
 bool collidePLShotEnemy(Pl_Shot* shot, Enemy* enemy) {
@@ -65,6 +65,17 @@ void COL_ENShotsPlayer(En_Shots* shots, Player* player) {
     for (ii = 0; ii < MAX_ENEMY_SHOTS; ii++) {
         if(shots->shot[ii].status == ALIVE) {
             if(collideENShotPlayer(&shots->shot[ii],player)) {
+                player->health = 0;
+            }
+        }
+    }
+}
+
+void COL_EnemiesPlayer(Enemies* enemies, Player* player) {
+    u8 ii;
+    for (ii = 0; ii < MAX_ENEMIES; ii++) {
+        if(enemies->enemy[ii].status == ALIVE) {
+            if(collideENPlayer(&enemies->enemy[ii], player)) {
                 player->health = 0;
             }
         }

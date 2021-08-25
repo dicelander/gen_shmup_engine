@@ -83,6 +83,7 @@ void en1_Shoot(Enemy* enemyptr, Action_Arg arg0, Action_Arg arg1, Action_Arg arg
         shots->shot[ii].vel_x = fix16Mul(sincos[1], FIX16(3));
         shots->shot[ii].health = 1;
         shots->shot[ii].sprite = SPR_addSprite(&en_bllt,fix16ToInt(shots->shot[ii].pos_x),fix16ToInt(shots->shot[ii].pos_y),TILE_ATTR(PAL1,0,FALSE,FALSE));
+        SPR_setDepth(shots->shot[ii].sprite, SPR_MIN_DEPTH);
         shots->en_shotsonscreen++;
         }
 }
@@ -174,6 +175,7 @@ void en1_spawnEnemy(Enemies* enemies, const u16 type, s16 pos_x, s16 pos_y, cons
         //enemies->enemy[i].weapon_y = 16;
         enemies->enemy[i].status = ALIVE;
         enemies->enemy[i].sprite = SPR_addSprite(&enemy1,fix16ToInt(enemies->enemy[i].pos_x),fix16ToInt(enemies->enemy[i].pos_y),TILE_ATTR(PAL1,0,0,0));
+        SPR_setDepth(enemies->enemy[i].sprite, SPR_MIN_DEPTH+1);
         //enemies->enemy[i].type = type;
         enemies->enemy[i].nextpatternstate = 0;
         enemies->enemy[i].timer = 0;

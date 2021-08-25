@@ -10,6 +10,7 @@
 #define TOP_EDGE FIX16(0)
 #define BOTTOM_EDGE FIX16(224)
 #define DIAGONAL45 0x2D //FIX16(0.71)
+#define PLAYER_EXPLOSION_LENGHT 67
 
 #include "../inc/player.h"
 #include <player.h>
@@ -43,29 +44,58 @@ void PL_killShot(Pl_Shot* shot, u16 index){
 //    KLog("tiro destruido");
 };
 
+void PL_killPlayer(Player* player) {
+    player->health = 0;
+    SPR_setVisibility(player->sprite,HIDDEN);
+    SPR_releaseSprite(player->sprite);
+    player->status = DEAD;
+    player->timer = 0;
+    player->width = 0;
+    player->height = 0;
+    player->offset_x = 0;
+    player->offset_y = 0;
+};
+
+
 void PL_movePlayer(Player* player) {
-    
-    if((player->vel_x != 0) & (player->vel_y != 0)) {
-        player->pos_x += fix16Mul(player->vel_x, DIAGONAL45);
-        player->pos_y += fix16Mul(player->vel_y, DIAGONAL45);
-    } else {
-        player->pos_x += player->vel_x;
-        player->pos_y += player->vel_y;
+    switch (player->status) {
+        case ALIVE:
+            if (player->health > 0) {
+                if((player->vel_x != 0) & (player->vel_y != 0)) {
+                    player->pos_x += fix16Mul(player->vel_x, DIAGONAL45);
+                    player->pos_y += fix16Mul(player->vel_y, DIAGONAL45);
+                } else {
+                    player->pos_x += player->vel_x;
+                    player->pos_y += player->vel_y;
+                }
+                
+                if (fix16Add(player->pos_x, player->offset_x) < LEFT_EDGE) {
+                    player->pos_x = fix16Sub(LEFT_EDGE, player->offset_x);
+                } else if (fix16Add(fix16Add(player->pos_x, player->offset_x), player->width) > RIGHT_EDGE) {
+                    player->pos_x = fix16Sub(RIGHT_EDGE, fix16Add(player->width, player->offset_x));
+                }
+                if (fix16Add(player->pos_y, player->offset_y) < TOP_EDGE) {
+                    player->pos_y = fix16Sub(TOP_EDGE, player->offset_y);
+                }
+                else if (fix16Add(fix16Add(player->pos_y, player->height), player->offset_y) > BOTTOM_EDGE) {
+                    player->pos_y = fix16Sub(BOTTOM_EDGE, fix16Add(player->height, player->offset_y));
+                }
+                SPR_setPosition(player->sprite, fix16ToInt(player->pos_x), fix16ToInt(player->pos_y));
+            } else {
+                PL_explode(player);
+            }
+            break;
+        case EXPLOSION:
+            if(player->timer < PLAYER_EXPLOSION_LENGHT) {
+                player->timer++;
+            } else {
+                player->sprite->timer = 0;
+                player->status = DEAD;
+            }
+            break;
+        case DEAD:
+            break;
     }
-    
-    if (fix16Add(player->pos_x, player->offset_x) < LEFT_EDGE) {
-        player->pos_x = fix16Sub(LEFT_EDGE, player->offset_x);
-    } else if (fix16Add(fix16Add(player->pos_x, player->offset_x), player->width) > RIGHT_EDGE) {
-        player->pos_x = fix16Sub(RIGHT_EDGE, fix16Add(player->width, player->offset_x));
-    }
-    if (fix16Add(player->pos_y, player->offset_y) < TOP_EDGE) {
-        player->pos_y = fix16Sub(TOP_EDGE, player->offset_y);
-    }
-    else if (fix16Add(fix16Add(player->pos_y, player->height), player->offset_y) > BOTTOM_EDGE) {
-        player->pos_y = fix16Sub(BOTTOM_EDGE, fix16Add(player->height, player->offset_y));
-    }
-    
-    SPR_setPosition(player->sprite, fix16ToInt(player->pos_x), fix16ToInt(player->pos_y));
 }
 
 void PL_initShots(Pl_Shots* shots) {
@@ -115,4 +145,15 @@ void PL_moveShots(Pl_Shots* shots) {
                 break;
         }
     }
+}
+
+void PL_explode(Player* player) {
+    player->status = EXPLOSION;
+    SPR_releaseSprite(player->sprite);
+    player->sprite = SPR_addSprite(&pl_expl, fix16ToInt(player->pos_x), fix16ToInt(player->pos_y), TILE_ATTR(PAL1,0,0,0));
+    player->timer = 0;
+    player->width = 0;
+    player->height = 0;
+    player->offset_x = 0;
+    player->offset_y = 0;
 }

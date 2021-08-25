@@ -22,4 +22,6 @@ void COL_PLShotsEnemies(Pl_Shots* shots, Enemies* enemies);
 
 void COL_ENShotsPlayer(En_Shots* shots, Player* player);
 
+void COL_EnemiesPlayer(Enemies* enemies, Player* player);
+
 #endif /* collision_h */
