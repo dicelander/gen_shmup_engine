@@ -34,11 +34,13 @@ void PL_setShotsPtr(Pl_Shots *shots) {
     pl_shots_ptr = shots;
 }
 
-void PL_killShot(Pl_Shot* e){
-    e->health = 0;
-    SPR_setVisibility(e->sprite,HIDDEN);
-    SPR_releaseSprite(e->sprite);
-    e->status = DEAD;
+void PL_killShot(Pl_Shot* shot, u16 index){
+    shot->health = 0;
+    SPR_setVisibility(shot->sprite,HIDDEN);
+    SPR_releaseSprite(shot->sprite);
+    shot->status = DEAD;
+    KLog_U1("Shot has been killed succesfully index ", index);
+//    KLog("tiro destruido");
 };
 
 void PL_movePlayer(Player* player) {
@@ -91,17 +93,26 @@ void PL_initShots(Pl_Shots* shots) {
 void PL_moveShots(Pl_Shots* shots) {
     u16 ii = 0;
     for (ii = 0; ii < MAX_PLAYER_SHOTS; ii++) {
-        if(shots->shot[ii].health > 0) {
-            if(fix16Add(shots->shot[ii].pos_y, shots->shot[ii].height) < TOP_EDGE || (shots->shot[ii].pos_x + shots->shot[ii].width) < LEFT_EDGE || shots->shot[ii].pos_x > RIGHT_EDGE) {
-                PL_killShot(&shots->shot[ii]);
-                shots->pl_shotsonscreen--;
-//                KLog_U2("Player shot on index ", i, " removed by moveShots, shotOnScreen now at ", shots->shotsOnScreen);
-            }
-            else {
-                shots->shot[ii].pos_x += shots->shot[ii].vel_x;
-                shots->shot[ii].pos_y += shots->shot[ii].vel_y;
-                SPR_setPosition(shots->shot[ii].sprite, fix16ToInt(shots->shot[ii].pos_x), fix16ToInt(shots->shot[ii].pos_y));
-            }
+        switch (shots->shot[ii].status) {
+            case ALIVE:
+                if(shots->shot[ii].health > 0) {
+                    if(fix16Add(shots->shot[ii].pos_y, shots->shot[ii].height) < TOP_EDGE || (shots->shot[ii].pos_x + shots->shot[ii].width) < LEFT_EDGE || shots->shot[ii].pos_x > RIGHT_EDGE) {
+                        KLog_U1("Player shot will be removed by moveShots on index ", ii);
+                        PL_killShot(&shots->shot[ii], ii);
+                        shots->pl_shotsonscreen--;
+                        KLog_U1("shotOnScreen now at ", shots->pl_shotsonscreen);
+                    } else {
+                        shots->shot[ii].pos_x += shots->shot[ii].vel_x;
+                        shots->shot[ii].pos_y += shots->shot[ii].vel_y;
+                        SPR_setPosition(shots->shot[ii].sprite, fix16ToInt(shots->shot[ii].pos_x), fix16ToInt(shots->shot[ii].pos_y));
+                    }
+                } else {
+                    KLog_U1("Shot will be killed due to health at index ii = ", ii);
+                    PL_killShot(&shots->shot[ii], ii);
+                    shots->pl_shotsonscreen--;
+                }
+            case DEAD:
+                break;
         }
     }
 }

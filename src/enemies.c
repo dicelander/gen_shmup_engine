@@ -8,6 +8,21 @@
 #include <enemies.h>
 #include "../inc/enemies.h"
 
+#define LEFT_EDGE FIX16(0)
+#define RIGHT_EDGE FIX16(320)
+#define TOP_EDGE FIX16(0)
+#define BOTTOM_EDGE FIX16(224)
+
+static Enemies *en_enemies_ptr;
+
+Enemies *EN_getEnemiesPtr() {
+    return en_enemies_ptr;
+}
+
+void EN_setEnemiesPtr(Enemies *enemies) {
+    en_enemies_ptr = enemies;
+}
+
 static En_Shots *en_shots_ptr;
 
 En_Shots *EN_getShotsPtr() {
@@ -44,30 +59,30 @@ void EN_killEnemy(Enemy* e){
     e->health = 0;
     SPR_setVisibility(e->sprite,HIDDEN);
     SPR_releaseSprite(e->sprite);
-    e->status = 0;
+    e->status = DEAD;
 };
 
 void en1_Shoot(Enemy* enemyptr, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5) {
     
-    u16 i;
+    u16 ii;
     Player *player = PL_getPlayerPtr();
     En_Shots *shots = EN_getShotsPtr();
     Enemy* enemy = (Enemy *) enemyptr;
     if (shots->en_shotsonscreen < MAX_ENEMY_SHOTS) {
-        while (shots->shot[i].status != DEAD) {
-            i++;
+        while (shots->shot[ii].status != DEAD) {
+            ii++;
         }
-        shots->shot[i].status = ALIVE;
+        shots->shot[ii].status = ALIVE;
         fix16 sincos[2];
-        shots->shot[i].pos_x = enemy->pos_x;
-        shots->shot[i].pos_y = enemy->pos_y;
-        shots->shot[i].width = FIX16(8);
-        shots->shot[i].height = FIX16(8);
+        shots->shot[ii].pos_x = enemy->pos_x;
+        shots->shot[ii].pos_y = enemy->pos_y;
+        shots->shot[ii].width = FIX16(8);
+        shots->shot[ii].height = FIX16(8);
         getSinCos(fix16ToInt(player->pos_x + FIX16(12) - enemy->pos_x), fix16ToInt(player->pos_y + FIX16(16) - enemy->pos_y), sincos);
-        shots->shot[i].vel_y = fix16Mul(sincos[0], FIX16(3));
-        shots->shot[i].vel_x = fix16Mul(sincos[1], FIX16(3));
-        shots->shot[i].health = 1;
-        shots->shot[i].sprite = SPR_addSprite(&en_bllt,fix16ToInt(shots->shot[i].pos_x),fix16ToInt(shots->shot[i].pos_y),TILE_ATTR(PAL1,0,FALSE,FALSE));
+        shots->shot[ii].vel_y = fix16Mul(sincos[0], FIX16(3));
+        shots->shot[ii].vel_x = fix16Mul(sincos[1], FIX16(3));
+        shots->shot[ii].health = 1;
+        shots->shot[ii].sprite = SPR_addSprite(&en_bllt,fix16ToInt(shots->shot[ii].pos_x),fix16ToInt(shots->shot[ii].pos_y),TILE_ATTR(PAL1,0,FALSE,FALSE));
         shots->en_shotsonscreen++;
         }
 }
@@ -177,7 +192,7 @@ void EN_killShot(En_Shot* e){
 void EN_moveShots(En_Shots *shots) {
     u16 i = 0;
     for (i = 0; i < MAX_ENEMY_SHOTS; i++) {
-        if(shots->shot[i].health > 0) {
+        if(shots->shot[i].status == ALIVE) {
             if(shots->shot[i].pos_y > BOTTOM_EDGE || (shots->shot[i].pos_x + shots->shot[i].width) < LEFT_EDGE || shots->shot[i].pos_x > RIGHT_EDGE || (shots->shot[i].pos_y + shots->shot[i].height) < TOP_EDGE) {
                 EN_killShot(&shots->shot[i]);
                 shots->en_shotsonscreen--;

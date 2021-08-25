@@ -8,8 +8,18 @@
 #ifndef enemies_h
 #define enemies_h
 
+
+#define MAX_ENEMIES 15
 #define MAX_ACTIONS 30
-#define MAX_ENEMY_SHOTS 100
+#define MAX_ENEMY_SHOTS 50
+#define ENEMY_DOWN 0
+#define ENEMY_DOWN_RIGHT 1
+#define ENEMY_DOWN_LEFT 2
+#define ENEMY_RIGHT 3
+#define ENEMY_LEFT 4
+#define ENEMY_UP_RIGHT 5
+#define ENEMY_UP_LEFT 6
+#define ENEMY_UP 7
 
 #include <genesis.h>
 #include "engine.h"
@@ -48,19 +58,17 @@ typedef struct Behaviour {
 } Behaviour;
 
 struct Enemy {
-    // movement related stuff (can change every frame)
     fix16 pos_x;
     fix16 pos_y;
-    fix16 vel_x;
-    fix16 vel_y;
-    u16 direction;
-    //hitbox/dimensions related stuff (suposedly constant)
     fix16 offset_x;
     fix16 offset_y;
     fix16 width;
     fix16 height;
     //other properties (needs organizing)
-    s16 health;
+    fix16 vel_x;
+    fix16 vel_y;
+    u16 direction;
+    s8 health;
     u16 nextpatternstate;
     u16 timer;
     u16 status;
@@ -75,22 +83,22 @@ typedef struct Enemies {
 } Enemies;
 
 typedef struct En_Shot {
-        fix16 pos_x;
-        fix16 pos_y;
-        fix16 vel_x;
-        fix16 vel_y;
-        u16 direction;
-        //hitbox/dimensions related stuff (suposedly constant)
-        fix16 offset_x;
-        fix16 offset_y;
-        fix16 width;
-        fix16 height;
-        //other properties (needs organizing)
-        s16 health;
-        u16 timer;
-        u16 status;
-        Sprite* sprite;
-        struct shot_type* type;
+    fix16 pos_x;
+    fix16 pos_y;
+    //hitbox/dimensions related stuff (suposedly constant)
+    fix16 offset_x;
+    fix16 offset_y;
+    fix16 width;
+    fix16 height;
+    //other properties (needs organizing)
+    fix16 vel_x;
+    fix16 vel_y;
+    u16 direction;
+    s8 health;
+    u16 timer;
+    u16 status;
+    Sprite* sprite;
+    struct shot_type* type;
 } En_Shot;
     
 typedef struct En_Shots {
@@ -116,10 +124,14 @@ void EN_initShots(En_Shots *shots);
 
 void en1_Shoot(Enemy* enemyptr, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5);
 
+En_Shots *EN_getShotsPtr();
+
 void EN_setShotsPtr(En_Shots *shots);
 
 void EN_moveShots(En_Shots *shots);
 
-En_Shots *EN_getShotsPtr();
+Enemies *EN_getEnemiesPtr();
+
+void EN_setEnemiesPtr(Enemies *enemies);
 
 #endif /* enemies_h */

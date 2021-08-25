@@ -43,21 +43,21 @@ static const fix16 f16sin[32][32] = {
 }
 */
 
-void killEntity(Entity* e){
-    e->health = 0;
-    SPR_setVisibility(e->sprite,HIDDEN);
-    SPR_releaseSprite(e->sprite);
-    e->status = DEAD;
-};
-
-void reviveEntity(Entity* e){
-    e->health = 1;
-    SPR_setVisibility(e->sprite,VISIBLE);
-};
-
-int collideEntities(Entity* a, Entity* b) {
-    return (a->pos_x + a->offset_x < b->pos_x + b->offset_x + b->width && a->pos_x + a->offset_x + a->width > b->pos_x + b->offset_x && a->pos_y + a->offset_y < b->pos_y + b->offset_y + b->height && a->pos_y + a->offset_y + a->height >= b->pos_y + b->offset_y);
-};
+//void killEntity(Entity* e){
+//    e->health = 0;
+//    SPR_setVisibility(e->sprite,HIDDEN);
+//    SPR_releaseSprite(e->sprite);
+//    e->status = DEAD;
+//};
+//
+//void reviveEntity(Entity* e){
+//    e->health = 1;
+//    SPR_setVisibility(e->sprite,VISIBLE);
+//};
+//
+//int collideEntities(Entity* a, Entity* b) {
+//    return (a->pos_x + a->offset_x < b->pos_x + b->offset_x + b->width && a->pos_x + a->offset_x + a->width > b->pos_x + b->offset_x && a->pos_y + a->offset_y < b->pos_y + b->offset_y + b->height && a->pos_y + a->offset_y + a->height >= b->pos_y + b->offset_y);
+//};
 
 int sign(int x) {
     return (x > 0) - (x < 0);

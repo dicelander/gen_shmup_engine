@@ -8,34 +8,33 @@
 #ifndef player_h
 #define player_h
 
-#define MAX_PLAYER_SHOTS 5
+#include <genesis.h>
+
+#define MAX_PLAYER_SHOTS 3
 #define ALIVE 1
 #define DEAD 0
 #define EXPLOSION 2
-
-#include <genesis.h>
 
 struct Shots; // forward declaration of shots struct declared in engine.h
 
 typedef struct Player Player;
 
 typedef struct Pl_Shot {
-        fix16 pos_x;
-        fix16 pos_y;
-        fix16 vel_x;
-        fix16 vel_y;
-        u16 direction;
-        //hitbox/dimensions related stuff (suposedly constant)
-        fix16 offset_x;
-        fix16 offset_y;
-        fix16 width;
-        fix16 height;
-        //other properties (needs organizing)
-        s16 health;
-        u16 timer;
-        u16 status;
-        Sprite* sprite;
-        struct shot_type* type;
+    fix16 pos_x;
+    fix16 pos_y;
+    fix16 offset_x;
+    fix16 offset_y;
+    fix16 width;
+    fix16 height;
+    //other properties (needs organizing)
+    fix16 vel_x;
+    fix16 vel_y;
+    u16 direction;
+    u8 health;
+    u16 timer;
+    u16 status;
+    Sprite* sprite;
+    struct shot_type* type;
 } Pl_Shot;
 
 typedef struct Pl_Shots {
@@ -46,13 +45,13 @@ typedef struct Pl_Shots {
 struct Player {
     fix16 pos_x;
     fix16 pos_y;
-    fix16 vel_x;
-    fix16 vel_y;
     fix16 offset_x;
     fix16 offset_y;
     fix16 width;
     fix16 height;
-    s16 health;
+    fix16 vel_x;
+    fix16 vel_y;
+    s8 health;
     Sprite* sprite;
     void (*eqweapon)(struct Pl_Shots* shots, Player *player); //function pointer to weapon player is currently using
 };
