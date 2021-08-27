@@ -51,12 +51,12 @@
 
 /* Level Structure */
 
-typedef struct Level {
-    u16 levelNumber;
-    u16 levelEvents[MAX_EVENTS];
-    u16 eventCoordinate[MAX_EVENTS];
-    u16 currentEvent;
-} Level;
+//typedef struct Level {
+//    u16 levelNumber;
+//    u16 levelEvents[MAX_EVENTS];
+//    u16 eventCoordinate[MAX_EVENTS];
+//    u16 currentEvent;
+//} Level;
 
 /*Player shots attributes*/
 

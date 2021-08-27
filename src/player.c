@@ -10,7 +10,7 @@
 #define TOP_EDGE FIX16(0)
 #define BOTTOM_EDGE FIX16(224)
 #define DIAGONAL45 0x2D //FIX16(0.71)
-#define PLAYER_EXPLOSION_LENGHT 67
+#define PLAYER_EXPLOSION_LENGHT 55
 
 #include "../inc/player.h"
 #include <player.h>
@@ -90,7 +90,7 @@ void PL_movePlayer(Player* player) {
                 player->timer++;
             } else {
                 player->sprite->timer = 0;
-                player->status = DEAD;
+                PL_killPlayer(player);
             }
             break;
         case DEAD:

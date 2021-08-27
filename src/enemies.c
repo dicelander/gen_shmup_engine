@@ -158,7 +158,7 @@ void EN_updateEnemies(Enemies *enemies){
     }
 }
 
-void en1_spawnEnemy(Enemies* enemies, const u16 type, s16 pos_x, s16 pos_y, const Behaviour* behaviour){
+void en1_spawnEnemy(Enemies* enemies, const u8 type, s16 pos_x, s16 pos_y, const Behaviour* behaviour){
     u16 i = 0;
     if (enemies->enemiesOnScreen < MAX_ENEMIES) {
         while (enemies->enemy[i].status != DEAD) {
