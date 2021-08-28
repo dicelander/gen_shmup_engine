@@ -11,7 +11,7 @@
 void wpn_peaShooter(Pl_Shots* shots, Player* player){
 //    KLog("Shot function called");
 //    KLog_U1("shots->shotsOnScreen = ", shots->shotsOnScreen);
-    int ii = 0;
+    u8 ii = 0;
     if (shots->pl_shotsonscreen < MAX_PLAYER_SHOTS) {
         while (shots->shot[ii].status != DEAD) {
             ii++;

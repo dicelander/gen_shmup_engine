@@ -47,10 +47,10 @@ void COL_PLShotsEnemies(Pl_Shots* shots, Enemies* enemies) {
                         aux = enemies->enemy[jj].health;
                         enemies->enemy[jj].health -= shots->shot[ii].health;
                         shots->shot[ii].health -= aux;
-                        KLog_U2("Collision between shot ii = ", ii, " and enemy jj = ", jj);
-                        KLog_f4("   > at shot x = ", shots->shot[ii].pos_x, " y = ", shots->shot[ii].pos_y, "; enemy x = ", enemies->enemy[jj].pos_x, " y = ", enemies->enemy[jj].pos_y);
-                        KLog_S2("shot ", ii, " health at ", shots->shot[ii].health);
-                        KLog_S2("enemy ", jj, " health at ", enemies->enemy[jj].health);
+//                        KLog_U2("Collision between shot ii = ", ii, " and enemy jj = ", jj);
+//                        KLog_f4("   > at shot x = ", shots->shot[ii].pos_x, " y = ", shots->shot[ii].pos_y, "; enemy x = ", enemies->enemy[jj].pos_x, " y = ", enemies->enemy[jj].pos_y);
+//                        KLog_S2("shot ", ii, " health at ", shots->shot[ii].health);
+//                        KLog_S2("enemy ", jj, " health at ", enemies->enemy[jj].health);
                     }
                 }
             }

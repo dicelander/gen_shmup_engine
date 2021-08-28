@@ -40,7 +40,7 @@ void PL_killShot(Pl_Shot* shot, u16 index){
     SPR_setVisibility(shot->sprite,HIDDEN);
     SPR_releaseSprite(shot->sprite);
     shot->status = DEAD;
-    KLog_U1("Shot has been killed succesfully index ", index);
+//    KLog_U1("Shot has been killed succesfully index ", index);
 //    KLog("tiro destruido");
 };
 
@@ -68,7 +68,6 @@ void PL_movePlayer(Player* player) {
                     player->pos_x += player->vel_x;
                     player->pos_y += player->vel_y;
                 }
-                
                 if (fix16Add(player->pos_x, player->offset_x) < LEFT_EDGE) {
                     player->pos_x = fix16Sub(LEFT_EDGE, player->offset_x);
                 } else if (fix16Add(fix16Add(player->pos_x, player->offset_x), player->width) > RIGHT_EDGE) {
@@ -79,6 +78,9 @@ void PL_movePlayer(Player* player) {
                 }
                 else if (fix16Add(fix16Add(player->pos_y, player->height), player->offset_y) > BOTTOM_EDGE) {
                     player->pos_y = fix16Sub(BOTTOM_EDGE, fix16Add(player->height, player->offset_y));
+                }
+                if((player->vel_x != 0 || player->vel_y !=0)) {
+                    addPosHistory(PL_getPosHistoryPtr(), player); //procurar um jeito melhor de fazer isso
                 }
                 SPR_setPosition(player->sprite, fix16ToInt(player->pos_x), fix16ToInt(player->pos_y));
             } else {
@@ -127,17 +129,17 @@ void PL_moveShots(Pl_Shots* shots) {
             case ALIVE:
                 if(shots->shot[ii].health > 0) {
                     if(fix16Add(shots->shot[ii].pos_y, shots->shot[ii].height) < TOP_EDGE || (shots->shot[ii].pos_x + shots->shot[ii].width) < LEFT_EDGE || shots->shot[ii].pos_x > RIGHT_EDGE) {
-                        KLog_U1("Player shot will be removed by moveShots on index ", ii);
+//                        KLog_U1("Player shot will be removed by moveShots on index ", ii);
                         PL_killShot(&shots->shot[ii], ii);
                         shots->pl_shotsonscreen--;
-                        KLog_U1("shotOnScreen now at ", shots->pl_shotsonscreen);
+//                        KLog_U1("shotOnScreen now at ", shots->pl_shotsonscreen);
                     } else {
                         shots->shot[ii].pos_x += shots->shot[ii].vel_x;
                         shots->shot[ii].pos_y += shots->shot[ii].vel_y;
                         SPR_setPosition(shots->shot[ii].sprite, fix16ToInt(shots->shot[ii].pos_x), fix16ToInt(shots->shot[ii].pos_y));
                     }
                 } else {
-                    KLog_U1("Shot will be killed due to health at index ii = ", ii);
+//                    KLog_U1("Shot will be killed due to health at index ii = ", ii);
                     PL_killShot(&shots->shot[ii], ii);
                     shots->pl_shotsonscreen--;
                 }
@@ -156,4 +158,37 @@ void PL_explode(Player* player) {
     player->height = 0;
     player->offset_x = 0;
     player->offset_y = 0;
+}
+
+#define POSITION_HISTORY_SIZE 40
+
+Pos_History* pos_hist_ptr;
+
+void addPosHistory(Pos_History* history, Player* player) {
+    history->pos_x[history->current] = player->pos_x + FIX16(12);
+    history->pos_y[history->current] = player->pos_y + FIX16(16);
+//    KLog_f2("added to history x:", history->pos_x[history->current], ", y:", history->pos_y[history->current]);
+//    KLog_U1("at current: ", history-> current);
+    history->current++;
+    if (history->current == POSITION_HISTORY_SIZE) {
+        history->current = 0;
+    }
+}
+
+void PL_initPosHistory (Pos_History* history) {
+    u8 ii;
+    for (ii = 0; ii < POSITION_HISTORY_SIZE; ii++) {
+        history->pos_x[ii] = 0;
+        history->pos_y[ii] = 0;
+    }
+    history->current = 0;
+    pos_hist_ptr = history;
+}
+
+Pos_History* PL_getPosHistoryPtr() {
+    return pos_hist_ptr;
+}
+
+void PL_setPosHistoryPtr(Pos_History* history) {
+    pos_hist_ptr = history;
 }

@@ -75,4 +75,24 @@ void PL_moveShots(Pl_Shots* shots);
 
 void PL_explode(Player* player);
 
+#ifndef POSITION_HISTORY_SIZE
+#define POSITION_HISTORY_SIZE 40
+#endif
+
+typedef struct Pos_History Pos_History;
+
+struct Pos_History {
+    fix16 pos_x[POSITION_HISTORY_SIZE];
+    fix16 pos_y[POSITION_HISTORY_SIZE];
+    u8 current; //positions will be added here
+};
+
+void addPosHistory(Pos_History* history, Player* player);
+
+void PL_initPosHistory (Pos_History* history);
+
+Pos_History* PL_getPosHistoryPtr();
+
+void PL_setPosHistoryPtr(Pos_History* history);
+
 #endif /* player_h */
