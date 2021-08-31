@@ -73,7 +73,7 @@ struct Enemy {
     u16 timer;
     u16 status;
     Sprite* sprite;
-    const struct en_type* type;
+    struct en_type* type;
     const struct Behaviour* pattern;
 };
 
@@ -110,19 +110,11 @@ void EN_killEnemy(Enemy* e);
 
 void EN_updateEnemies(Enemies *enemies);
 
-void en1_changeVelocity(Enemy* enemy, Action_Arg vel_x, Action_Arg vel_y, Action_Arg pos_x, Action_Arg pos_y, Action_Arg dir, Action_Arg arg5);
-
-void en1_changePosition(Enemy* enemy, Action_Arg pos_x, Action_Arg pos_y, Action_Arg dir, Action_Arg zerospeed, Action_Arg arg5);
-
-void en1_spawnEnemy(Enemies* enemies, const u8 type, s16 pos_x, s16 pos_y, const Behaviour* behaviour);
-
 void en_chgaction(Enemy* enemy, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5);
 
 void en_condchgaction(Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5);
 
 void EN_initShots(En_Shots *shots);
-
-void en1_Shoot(Enemy* enemyptr, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5);
 
 En_Shots *EN_getShotsPtr();
 
@@ -133,5 +125,7 @@ void EN_moveShots(En_Shots *shots);
 Enemies *EN_getEnemiesPtr();
 
 void EN_setEnemiesPtr(Enemies *enemies);
+
+void en2_spawnEnemy(Enemies* enemies, const u8 type, s16 pos_x, s16 pos_y, const Behaviour* behaviour);
 
 #endif /* enemies_h */
