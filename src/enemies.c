@@ -74,9 +74,7 @@ void EN_updateEnemies(Enemies *enemies){
                         enemies->enemy[ii].pattern->actions[enemies->enemy[ii].nextpatternstate](&enemies->enemy[ii], enemies->enemy[ii].pattern->arg0[enemies->enemy[ii].nextpatternstate], enemies->enemy[ii].pattern->arg1[enemies->enemy[ii].nextpatternstate], enemies->enemy[ii].pattern->arg2[enemies->enemy[ii].nextpatternstate], enemies->enemy[ii].pattern->arg3[enemies->enemy[ii].nextpatternstate], enemies->enemy[ii].pattern->arg4[enemies->enemy[ii].nextpatternstate], enemies->enemy[ii].pattern->arg5[enemies->enemy[ii].nextpatternstate]);
                         enemies->enemy[ii].nextpatternstate++;
                     }
-                    enemies->enemy[ii].pos_x += enemies->enemy[ii].vel_x;
-                    enemies->enemy[ii].pos_y += enemies->enemy[ii].vel_y;
-                    SPR_setPosition(enemies->enemy[ii].sprite, fix16ToInt(enemies->enemy[ii].pos_x), fix16ToInt(enemies->enemy[ii].pos_y));
+                    enemies->enemy[ii].type.move(&enemies->enemy[ii], (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0);
                     enemies->enemy[ii].timer++;
                 } else if(enemies->enemy[ii].health <= 0) {
                     enemies->enemy[ii].status = EXPLOSION;

@@ -86,7 +86,7 @@ void en_spiderChangeTypeAction(Enemy* spider, Action_Arg action, Action_Arg type
         case 0:
             switch (type.u16) {
                 case 0:
-                    spider->type->move = &en_spiderUpdateVel;
+                    spider->type.move = &en_spiderUpdateVel;
                     break;
                 case 1:
                     break;
@@ -97,14 +97,14 @@ void en_spiderChangeTypeAction(Enemy* spider, Action_Arg action, Action_Arg type
         case 1:
             switch (type.u16) {
                 case 0:
-                    spider->type->move = &en_spiderUpdateVel;
+                    spider->type.move = &en_spiderUpdateVel;
                     break;
             }
             break;
         case 2:
             switch (type.u16) {
                 case 0:
-                    spider->type->move = &en_spiderUpdateVel;
+                    spider->type.move = &en_spiderUpdateVel;
                     break;
                 case 1:
                     break;
@@ -116,10 +116,10 @@ void en_spiderChangeTypeAction(Enemy* spider, Action_Arg action, Action_Arg type
 Behaviour const spiderBehaviour = {
     .actions = {&en_spiderChangeVelocity, &en_spiderChangeVelocity, &en_spiderChangeVelocity, &en_spiderChangeVelocity, &en_spiderChangeVelocity, &en_spiderChangeVelocity, &en_spiderChangeVelocity},
     .actionframes = {0, 30, 40, 50, 60, 70, 80},
-    {{.fix16 = FIX16(0)}, {.fix16 = FIX16(-0.71)}, {.fix16 = FIX16(-1)}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {.fix16 = FIX16(-0.71)}, {.fix16 = FIX16(0)}, {0}, {0}, {0}},
-    {{.fix16 = FIX16(2)}, {.fix16 = FIX16(1.42)}, {.fix16 = FIX16(0)}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {.fix16 = FIX16(-1.42)}, {.fix16 = FIX16(-2)}, {0}, {0}, {0}},
-    {{NULL}},
-    {{NULL}},
-    {{.u16 = ENEMY_DOWN},{.u16 = ENEMY_DOWN_LEFT},{.u16 = ENEMY_LEFT}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {.u16 = ENEMY_UP_LEFT}, {.u16 = ENEMY_UP}},
-    {{NULL}},
+    .arg0 = {{.fix16 = FIX16(0)}, {.fix16 = FIX16(-0.71)}, {.fix16 = FIX16(-1)}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {.fix16 = FIX16(-0.71)}, {.fix16 = FIX16(0)}, {0}, {0}, {0}},
+    .arg1 = {{.fix16 = FIX16(2)}, {.fix16 = FIX16(1.42)}, {.fix16 = FIX16(0)}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {.fix16 = FIX16(-1.42)}, {.fix16 = FIX16(-2)}, {0}, {0}, {0}},
+    .arg2 = {{NULL}},
+    .arg3 = {{NULL}},
+    .arg4 = {{.u16 = ENEMY_DOWN},{.u16 = ENEMY_DOWN_LEFT},{.u16 = ENEMY_LEFT}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {.u16 = ENEMY_UP_LEFT}, {.u16 = ENEMY_UP}},
+    .arg5 = {{NULL}},
 };

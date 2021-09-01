@@ -73,7 +73,7 @@ struct Enemy {
     u16 timer;
     u16 status;
     Sprite* sprite;
-    struct en_type* type;
+    struct en_type type;
     const struct Behaviour* pattern;
 };
 

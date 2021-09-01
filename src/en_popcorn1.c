@@ -7,13 +7,10 @@
 
 #include "../inc/en_popcorn1.h"
 
-void en_pc1_updatePosition(Enemy* enemy, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5) {
-    
+void en_pc1_move(Enemy* enemy, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5) {
     enemy->pos_x += enemy->vel_x;
     enemy->pos_y += enemy->vel_y;
     SPR_setPosition(enemy->sprite, fix16ToInt(enemy->pos_x), fix16ToInt(enemy->pos_y));
-    enemy->timer++;
-    
 }
 
 void en_pc1_spawn(Enemies* enemies, const u8 type, s16 pos_x, s16 pos_y, const Behaviour* behaviour){
@@ -38,6 +35,7 @@ void en_pc1_spawn(Enemies* enemies, const u8 type, s16 pos_x, s16 pos_y, const B
         enemies->enemy[i].nextpatternstate = 0;
         enemies->enemy[i].timer = 0;
         enemies->enemy[i].pattern = behaviour;
+        enemies->enemy[i].type.move = &en_pc1_move;
         enemies->enemiesOnScreen++;
     }
 }
