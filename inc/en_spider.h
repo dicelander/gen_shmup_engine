@@ -11,9 +11,14 @@
 #include <genesis.h>
 #include "enemies.h"
 
-void en_spawnSpider(Enemies* enemies, const u8 type, s16 pos_x, s16 pos_y, const Behaviour* behaviour);
+void en_spider_spawn(Enemies* enemies, const u8 type, s16 pos_x, s16 pos_y, const Behaviour* behaviour);
 
-void en_spiderShoot(Enemy* enemyptr, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5);
+void en_spider_shoot(Enemy* enemyptr, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5);
 
+void en_spider_changeVelocity(Enemy* enemy, Action_Arg vel_x, Action_Arg vel_y, Action_Arg pos_x, Action_Arg pos_y, Action_Arg dir, Action_Arg arg5);
+
+void en_spider_changeType(Enemy* spider, Action_Arg action, Action_Arg type, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5);
+
+void en_spider_kill(Enemy* spider, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5);
 
 #endif /* en_spider_h */

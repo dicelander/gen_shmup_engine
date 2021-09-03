@@ -7,7 +7,14 @@
 
 #include "../inc/en_spider.h"
 
-void en_spiderSpawn(Enemies* enemies, const u8 type, s16 pos_x, s16 pos_y, const Behaviour* behaviour) {
+void en_spider_move(Enemy* enemy, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5) {
+    enemy->pos_x += enemy->vel_x;
+    enemy->pos_y += enemy->vel_y;
+    SPR_setPosition(enemy->sprite, fix16ToInt(enemy->pos_x), fix16ToInt(enemy->pos_y));
+}
+
+
+void en_spider_spawn(Enemies* enemies, const u8 type, s16 pos_x, s16 pos_y, const Behaviour* behaviour) {
     u16 i = 0;
     if (enemies->enemiesOnScreen < MAX_ENEMIES) {
         while (enemies->enemy[i].status != DEAD) {
@@ -27,11 +34,12 @@ void en_spiderSpawn(Enemies* enemies, const u8 type, s16 pos_x, s16 pos_y, const
         enemies->enemy[i].nextpatternstate = 0;
         enemies->enemy[i].timer = 0;
         enemies->enemy[i].pattern = behaviour;
+        enemies->enemy[i].type.move = &en_spider_move;
         enemies->enemiesOnScreen++;
     }
 }
 
-void en_spiderShoot(Enemy* enemyptr, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5) {
+void en_spider_shoot(Enemy* enemyptr, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5) {
     u16 ii;
     En_Shots *shots = EN_getShotsPtr();
     Enemy* enemy = (Enemy *) enemyptr;
@@ -52,14 +60,14 @@ void en_spiderShoot(Enemy* enemyptr, Action_Arg arg0, Action_Arg arg1, Action_Ar
         }
 }
 
-void en_spiderChangeVelocity(Enemy* enemy, Action_Arg vel_x, Action_Arg vel_y, Action_Arg pos_x, Action_Arg pos_y, Action_Arg dir, Action_Arg arg5) {
+void en_spider_changeVelocity(Enemy* enemy, Action_Arg vel_x, Action_Arg vel_y, Action_Arg pos_x, Action_Arg pos_y, Action_Arg dir, Action_Arg arg5) {
     enemy->vel_x = vel_x.fix16;
     enemy->vel_y = vel_y.fix16;
 }
 
-void en_spiderMvShot();
+void en_spider_MvShot();
 
-void en_spiderUpdateMvt(Enemy* spider, Action_Arg vel_x, Action_Arg vel_y, Action_Arg pos_x, Action_Arg pos_y, Action_Arg dir, Action_Arg mode) {
+void en_spider_UpdateMvt(Enemy* spider, Action_Arg vel_x, Action_Arg vel_y, Action_Arg pos_x, Action_Arg pos_y, Action_Arg dir, Action_Arg mode) {
     switch (mode.u16) {
         case 0:
             spider->pos_x += vel_x.fix16;
@@ -76,12 +84,22 @@ void en_spiderUpdateMvt(Enemy* spider, Action_Arg vel_x, Action_Arg vel_y, Actio
     }
 }
 
-void en_spiderUpdateVel(Enemy* spider, Action_Arg vel_x, Action_Arg vel_y, Action_Arg pos_x, Action_Arg pos_y, Action_Arg dir, Action_Arg mode) {
-    spider->vel_x += FIX16(-1);
-    spider->vel_y += FIX16(-1);
+void en_spider_moveDeAcc(Enemy* spider, Action_Arg vel_x, Action_Arg vel_y, Action_Arg pos_x, Action_Arg pos_y, Action_Arg dir, Action_Arg mode) {
+    if (spider->vel_y > FIX16(-2.0)) {
+        spider->vel_y += FIX16(-0.5);
+    } else {
+        spider->vel_y = FIX16(0);
+        spider->type.move = &en_spider_move;
+    }
+    KLog_f1("vel_y: ", spider->vel_y);
+    spider->pos_x += spider->vel_x;
+    spider->pos_y += spider->vel_y;
+    SPR_setPosition(spider->sprite, fix16ToInt(spider->pos_x), fix16ToInt(spider->pos_y));
 }
 
-void en_spiderChangeTypeAction(Enemy* spider, Action_Arg action, Action_Arg type, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5) {
+void en_spider_changeType(Enemy* spider, Action_Arg action, Action_Arg type, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5) {
+    spider->type.move = &en_spider_moveDeAcc;
+    /*
     switch (action.u16) {
         case 0:
             switch (type.u16) {
@@ -111,15 +129,12 @@ void en_spiderChangeTypeAction(Enemy* spider, Action_Arg action, Action_Arg type
             }
             break;
     }
+     */
 }
 
-Behaviour const spiderBehaviour = {
-    .actions = {&en_spiderChangeVelocity, &en_spiderChangeVelocity, &en_spiderChangeVelocity, &en_spiderChangeVelocity, &en_spiderChangeVelocity, &en_spiderChangeVelocity, &en_spiderChangeVelocity},
-    .actionframes = {0, 30, 40, 50, 60, 70, 80},
-    .arg0 = {{.fix16 = FIX16(0)}, {.fix16 = FIX16(-0.71)}, {.fix16 = FIX16(-1)}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {.fix16 = FIX16(-0.71)}, {.fix16 = FIX16(0)}, {0}, {0}, {0}},
-    .arg1 = {{.fix16 = FIX16(2)}, {.fix16 = FIX16(1.42)}, {.fix16 = FIX16(0)}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {.fix16 = FIX16(-1.42)}, {.fix16 = FIX16(-2)}, {0}, {0}, {0}},
-    .arg2 = {{NULL}},
-    .arg3 = {{NULL}},
-    .arg4 = {{.u16 = ENEMY_DOWN},{.u16 = ENEMY_DOWN_LEFT},{.u16 = ENEMY_LEFT}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {.u16 = ENEMY_UP_LEFT}, {.u16 = ENEMY_UP}},
-    .arg5 = {{NULL}},
-};
+void en_spider_kill(Enemy* spider, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5) {
+    spider->health = 0;
+    SPR_setVisibility(spider->sprite,HIDDEN);
+    SPR_releaseSprite(spider->sprite);
+    spider->status = DEAD;
+}
