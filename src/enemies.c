@@ -70,9 +70,17 @@ void EN_updateEnemies(Enemies *enemies){
                 break;
             case ALIVE:
                 if(enemies->enemy[ii].health > 0) {
+                    // método diferente de fazer a atualização dos inimigos, mais barato porém menos maleável.
+                    /*
                     while(enemies->enemy[ii].timer == enemies->enemy[ii].pattern->actionframes[enemies->enemy[ii].nextpatternstate]) {
                         enemies->enemy[ii].pattern->actions[enemies->enemy[ii].nextpatternstate](&enemies->enemy[ii], enemies->enemy[ii].pattern->arg0[enemies->enemy[ii].nextpatternstate], enemies->enemy[ii].pattern->arg1[enemies->enemy[ii].nextpatternstate], enemies->enemy[ii].pattern->arg2[enemies->enemy[ii].nextpatternstate], enemies->enemy[ii].pattern->arg3[enemies->enemy[ii].nextpatternstate], enemies->enemy[ii].pattern->arg4[enemies->enemy[ii].nextpatternstate], enemies->enemy[ii].pattern->arg5[enemies->enemy[ii].nextpatternstate]);
                         enemies->enemy[ii].nextpatternstate++;
+                    }
+                     */
+                    if(enemies->enemy[ii].timer == enemies->enemy[ii].pattern->actionframes[enemies->enemy[ii].nextpatternstate]) {
+                        enemies->enemy[ii].pattern->actions[enemies->enemy[ii].nextpatternstate](&enemies->enemy[ii], enemies->enemy[ii].pattern->arg0[enemies->enemy[ii].nextpatternstate], enemies->enemy[ii].pattern->arg1[enemies->enemy[ii].nextpatternstate], enemies->enemy[ii].pattern->arg2[enemies->enemy[ii].nextpatternstate], enemies->enemy[ii].pattern->arg3[enemies->enemy[ii].nextpatternstate], enemies->enemy[ii].pattern->arg4[enemies->enemy[ii].nextpatternstate], enemies->enemy[ii].pattern->arg5[enemies->enemy[ii].nextpatternstate]);
+                        enemies->enemy[ii].nextpatternstate++;
+                        enemies->enemy[ii].timer = 0xFFFF;
                     }
                     enemies->enemy[ii].type.move(&enemies->enemy[ii], (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0);
                     enemies->enemy[ii].timer++;
