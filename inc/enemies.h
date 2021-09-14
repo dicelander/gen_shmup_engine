@@ -23,6 +23,7 @@
 
 #include <genesis.h>
 #include "engine.h"
+#include "entity.h"
 #include "player.h"
 
 typedef struct Enemy Enemy;

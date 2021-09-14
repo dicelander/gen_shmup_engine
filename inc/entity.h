@@ -38,12 +38,9 @@ struct Entity {
     Entity* parent;
     enum {player, shot, enemy} Type;
     struct {
-        void (*move)(Entity* entity, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3); //enough args?
-        union {
-            void (*en_Shoot)(Entity* entity, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3);
-            void (*pl_Shoot)(Entity* entity, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3);
-        } shoot;
-        void (*explode)(Entity* entity, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3);
+        void (*move)();
+        void (*shoot)();
+        void (*explode)();
     } Action;
     union {
         u16 u16;

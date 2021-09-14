@@ -9,6 +9,7 @@
 #define player_h
 
 #include <genesis.h>
+#include "entity.h"
 #include "../res/resources.h"
 
 #define MAX_PLAYER_SHOTS 3
@@ -18,60 +19,14 @@
 
 struct Shots; // forward declaration of shots struct declared in engine.h
 
-typedef struct Player Player;
+typedef Entity Player;
 
-typedef struct Pl_Shot Pl_Shot;
-
-#ifndef ACTION_ARG
-#define ACTION_ARG
-
-typedef union Action_Arg {
-    fix16 fix16;
-    u16 u16;
-} Action_Arg;
-
-#endif
-
-struct Pl_Shot {
-    fix16 pos_x;
-    fix16 pos_y;
-    fix16 offset_x;
-    fix16 offset_y;
-    fix16 width;
-    fix16 height;
-    //other properties (needs organizing)
-    fix16 vel_x;
-    fix16 vel_y;
-    u16 direction;
-    u8 health;
-    u16 timer;
-    u8 status;
-    Sprite* sprite;
-    struct {
-        void (*move)(Pl_Shot* shot, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5);
-    } type;
-};
+typedef Entity Pl_Shot;
 
 typedef struct Pl_Shots {
     Pl_Shot shot[MAX_PLAYER_SHOTS];
     u16 pl_shotsonscreen;
 } Pl_Shots;
-
-struct Player {
-    fix16 pos_x;
-    fix16 pos_y;
-    fix16 offset_x;
-    fix16 offset_y;
-    fix16 width;
-    fix16 height;
-    fix16 vel_x;
-    fix16 vel_y;
-    s8 health;
-    u8 timer;
-    u8 status;
-    Sprite* sprite;
-    void (*eqweapon)(struct Pl_Shots* shots, Player *player); //function pointer to weapon player is currently using
-};
 
 void PL_setPlayerPtr(Player* player);
 
