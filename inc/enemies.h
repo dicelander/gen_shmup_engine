@@ -33,10 +33,15 @@ struct en_type; //contains pointers to functions enemy uses to do actions that a
 
 struct Player;
 
+#ifndef ACTION_ARG
+#define ACTION_ARG
+
 typedef union Action_Arg {
     fix16 fix16;
     u16 u16;
 } Action_Arg;
+
+#endif
 
 typedef void en_Action(Enemy* enemyptr, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5);
 
@@ -82,7 +87,14 @@ typedef struct Enemies {
     u16 enemiesOnScreen;
 } Enemies;
 
-typedef struct En_Shot {
+
+typedef struct En_Shot En_Shot;
+
+//struct shot_type {
+//    void (*move)(En_Shot* shot, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5);
+//};
+
+struct En_Shot {
     fix16 pos_x;
     fix16 pos_y;
     //hitbox/dimensions related stuff (suposedly constant)
@@ -98,8 +110,14 @@ typedef struct En_Shot {
     u16 timer;
     u16 status;
     Sprite* sprite;
-    struct shot_type* type;
-} En_Shot;
+    union owner {
+        Enemy* enemy;
+        En_Shot* shot;
+    } owner;
+    struct {
+        void (*move)(En_Shot* shot);
+    } type;
+};
     
 typedef struct En_Shots {
     struct En_Shot shot[MAX_ENEMY_SHOTS];

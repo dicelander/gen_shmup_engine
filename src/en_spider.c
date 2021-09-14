@@ -39,10 +39,9 @@ void en_spider_spawn(Enemies* enemies, const u8 type, s16 pos_x, s16 pos_y, cons
     }
 }
 
-void en_spider_shoot(Enemy* enemyptr, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5) {
+void en_spider_shoot(Enemy* enemy, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5) {
     u16 ii;
     En_Shots *shots = EN_getShotsPtr();
-    Enemy* enemy = (Enemy *) enemyptr;
     if (shots->en_shotsonscreen < MAX_ENEMY_SHOTS) {
         while (shots->shot[ii].status != DEAD) {
             ii++;
@@ -56,6 +55,8 @@ void en_spider_shoot(Enemy* enemyptr, Action_Arg arg0, Action_Arg arg1, Action_A
         shots->shot[ii].health = 1;
         shots->shot[ii].sprite = SPR_addSprite(&en_beam,fix16ToInt(shots->shot[ii].pos_x),fix16ToInt(shots->shot[ii].pos_y),TILE_ATTR(PAL1,0,FALSE,FALSE));
         SPR_setDepth(shots->shot[ii].sprite, SPR_MIN_DEPTH);
+//        shots->shot[ii].type.move = &en_spider_MvShot;
+        shots->shot[ii].owner.enemy = enemy;
         shots->en_shotsonscreen++;
         }
 }
@@ -65,7 +66,36 @@ void en_spider_changeVelocity(Enemy* enemy, Action_Arg vel_x, Action_Arg vel_y, 
     enemy->vel_y = vel_y.fix16;
 }
 
-void en_spider_MvShot();
+void en_spider_MvShot(En_Shot* shot) {
+    
+    if ((shot->timer == 8) && (shot->pos_y <= (BOTTOM_EDGE - shot->height))) {
+        u16 ii = 0;
+        En_Shots *shots = EN_getShotsPtr();
+        if (shots->en_shotsonscreen < MAX_ENEMY_SHOTS) {
+            while (shots->shot[ii].status != DEAD) {
+                ii++;
+            }
+            shots->shot[ii].status = ALIVE;
+            
+            shots->shot[ii].pos_x = shot->pos_x+FIX16(8);
+            shots->shot[ii].pos_y = shot->pos_y+shot->height;
+            shots->shot[ii].width = FIX16(8);
+            shots->shot[ii].height = FIX16(32);
+            shots->shot[ii].health = 1;
+            shots->shot[ii].sprite = SPR_addSprite(&en_beam,fix16ToInt(shots->shot[ii].pos_x),fix16ToInt(shots->shot[ii].pos_y),TILE_ATTR(PAL1,0,FALSE,FALSE));
+            SPR_setDepth(shots->shot[ii].sprite, SPR_MIN_DEPTH);
+            shots->shot[ii].owner.shot =  shot;
+            shots->shot[ii].type.move = &en_spider_MvShot;
+            shots->en_shotsonscreen++;
+        }
+        
+        if (SPR_isVisible(shot->sprite, FALSE)) {
+            SPR_setVisibility(shot->sprite, HIDDEN);
+        } else {
+            SPR_setVisibility(shot->sprite, VISIBLE);
+        }
+    }
+};
 
 void en_spider_UpdateMvt(Enemy* spider, Action_Arg vel_x, Action_Arg vel_y, Action_Arg pos_x, Action_Arg pos_y, Action_Arg dir, Action_Arg mode) {
     switch (mode.u16) {

@@ -20,7 +20,19 @@ struct Shots; // forward declaration of shots struct declared in engine.h
 
 typedef struct Player Player;
 
-typedef struct Pl_Shot {
+typedef struct Pl_Shot Pl_Shot;
+
+#ifndef ACTION_ARG
+#define ACTION_ARG
+
+typedef union Action_Arg {
+    fix16 fix16;
+    u16 u16;
+} Action_Arg;
+
+#endif
+
+struct Pl_Shot {
     fix16 pos_x;
     fix16 pos_y;
     fix16 offset_x;
@@ -35,8 +47,10 @@ typedef struct Pl_Shot {
     u16 timer;
     u8 status;
     Sprite* sprite;
-    struct shot_type* type;
-} Pl_Shot;
+    struct {
+        void (*move)(Pl_Shot* shot, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5);
+    } type;
+};
 
 typedef struct Pl_Shots {
     Pl_Shot shot[MAX_PLAYER_SHOTS];

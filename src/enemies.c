@@ -46,7 +46,7 @@ void EN_initShots(En_Shots *shots) {
         shots->shot[ii].vel_y = 0;
         shots->shot[ii].health = 0;
         shots->shot[ii].sprite = NULL;
-        shots->shot[ii].type = 0;
+        shots->shot[ii].type.move = NULL;
         shots->shot[ii].timer = 0;
         shots->shot[ii].direction = 0;
         shots->shot[ii].status = DEAD;

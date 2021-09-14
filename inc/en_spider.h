@@ -10,6 +10,7 @@
 
 #include <genesis.h>
 #include "enemies.h"
+#include "engine.h"
 
 void en_spider_spawn(Enemies* enemies, const u8 type, s16 pos_x, s16 pos_y, const Behaviour* behaviour);
 
