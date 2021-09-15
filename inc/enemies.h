@@ -64,39 +64,15 @@ typedef struct Enemies {
 } Enemies;
 
 
-typedef struct En_Shot En_Shot;
+typedef Entity En_Shot;
 
 //struct shot_type {
 //    void (*move)(En_Shot* shot, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5);
 //};
 
-struct En_Shot {
-    fix16 pos_x;
-    fix16 pos_y;
-    //hitbox/dimensions related stuff (suposedly constant)
-    fix16 offset_x;
-    fix16 offset_y;
-    fix16 width;
-    fix16 height;
-    //other properties (needs organizing)
-    fix16 vel_x;
-    fix16 vel_y;
-    u16 direction;
-    s8 health;
-    u16 timer;
-    u16 status;
-    Sprite* sprite;
-    union owner {
-        Enemy* enemy;
-        En_Shot* shot;
-    } owner;
-    struct {
-        void (*move)(En_Shot* shot);
-    } type;
-};
     
 typedef struct En_Shots {
-    struct En_Shot shot[MAX_ENEMY_SHOTS];
+    En_Shot shot[MAX_ENEMY_SHOTS];
     u16 en_shotsonscreen;
 } En_Shots;
 

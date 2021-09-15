@@ -56,7 +56,7 @@ void en_spider_shoot(Enemy* enemy, Action_Arg arg0, Action_Arg arg1, Action_Arg 
         shots->shot[ii].sprite = SPR_addSprite(&en_beam,fix16ToInt(shots->shot[ii].pos_x),fix16ToInt(shots->shot[ii].pos_y),TILE_ATTR(PAL1,0,FALSE,FALSE));
         SPR_setDepth(shots->shot[ii].sprite, SPR_MIN_DEPTH);
 //        shots->shot[ii].type.move = &en_spider_MvShot;
-        shots->shot[ii].owner.enemy = enemy;
+        shots->shot[ii].parent = enemy;
         shots->en_shotsonscreen++;
         }
 }
@@ -84,8 +84,8 @@ void en_spider_MvShot(En_Shot* shot) {
             shots->shot[ii].health = 1;
             shots->shot[ii].sprite = SPR_addSprite(&en_beam,fix16ToInt(shots->shot[ii].pos_x),fix16ToInt(shots->shot[ii].pos_y),TILE_ATTR(PAL1,0,FALSE,FALSE));
             SPR_setDepth(shots->shot[ii].sprite, SPR_MIN_DEPTH);
-            shots->shot[ii].owner.shot =  shot;
-            shots->shot[ii].type.move = &en_spider_MvShot;
+            shots->shot[ii].parent =  shot;
+            shots->shot[ii].Action.move = &en_spider_MvShot;
             shots->en_shotsonscreen++;
         }
         
