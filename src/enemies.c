@@ -120,15 +120,7 @@ void EN_moveShots(En_Shots *shots) {
     u16 i = 0;
     for (i = 0; i < MAX_ENEMY_SHOTS; i++) {
         if(shots->shot[i].status == ALIVE) {
-            if(shots->shot[i].pos_y > BOTTOM_EDGE || (shots->shot[i].pos_x + shots->shot[i].width) < LEFT_EDGE || shots->shot[i].pos_x > RIGHT_EDGE || (shots->shot[i].pos_y + shots->shot[i].height) < TOP_EDGE) {
-                EN_killShot(&shots->shot[i]);
-                shots->en_shotsonscreen--;
-            } else {
-                //                KLog("Updating enemy shot positions");
-                shots->shot[i].pos_x += shots->shot[i].vel_x;
-                shots->shot[i].pos_y += shots->shot[i].vel_y;
-                SPR_setPosition(shots->shot[i].sprite, fix16ToInt(shots->shot[i].pos_x), fix16ToInt(shots->shot[i].pos_y));
-            }
+            shots->shot[i].Action.move(&shots->shot[i], shots);
         }
     }
 }

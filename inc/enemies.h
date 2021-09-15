@@ -92,6 +92,8 @@ void EN_setShotsPtr(En_Shots *shots);
 
 void EN_moveShots(En_Shots *shots);
 
+void EN_killShot(En_Shot* e);
+
 Enemies *EN_getEnemiesPtr();
 
 void EN_setEnemiesPtr(Enemies *enemies);

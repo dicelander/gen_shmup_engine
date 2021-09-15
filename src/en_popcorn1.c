@@ -73,6 +73,7 @@ void en_pc1_shoot(Enemy* enemyptr, Action_Arg arg0, Action_Arg arg1, Action_Arg 
             ii++;
         }
         shots->shot[ii].status = ALIVE;
+        shots->shot[ii].Action.move = &en_pc1_MvShot;
         fix16 sincos[2];
         shots->shot[ii].pos_x = enemy->pos_x;
         shots->shot[ii].pos_y = enemy->pos_y;
@@ -93,4 +94,15 @@ void en_pc1_kill(Enemy* popcorn, Action_Arg arg0, Action_Arg arg1, Action_Arg ar
     SPR_setVisibility(popcorn->sprite,HIDDEN);
     SPR_releaseSprite(popcorn->sprite);
     popcorn->status = DEAD;
+}
+
+void en_pc1_MvShot(En_Shot* shot, En_Shots* shots) {
+    if(shot->pos_y > BOTTOM_EDGE || (shot->pos_x + shot->width) < LEFT_EDGE || shot->pos_x > RIGHT_EDGE || (shot->pos_y + shot->height) < TOP_EDGE) {
+        EN_killShot(shot);
+        shots->en_shotsonscreen--;
+    } else {
+        shot->pos_x += shot->vel_x;
+        shot->pos_y += shot->vel_y;
+        SPR_setPosition(shot->sprite, fix16ToInt(shot->pos_x), fix16ToInt(shot->pos_y));
+    }
 }

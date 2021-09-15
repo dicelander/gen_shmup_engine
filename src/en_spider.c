@@ -47,7 +47,7 @@ void en_spider_shoot(Enemy* enemy, Action_Arg arg0, Action_Arg arg1, Action_Arg 
             ii++;
         }
         shots->shot[ii].status = ALIVE;
-
+        shots->shot[ii].parent = enemy;
         shots->shot[ii].pos_x = enemy->pos_x+FIX16(8);
         shots->shot[ii].pos_y = enemy->pos_y+enemy->height;
         shots->shot[ii].width = FIX16(8);
@@ -55,8 +55,7 @@ void en_spider_shoot(Enemy* enemy, Action_Arg arg0, Action_Arg arg1, Action_Arg 
         shots->shot[ii].health = 1;
         shots->shot[ii].sprite = SPR_addSprite(&en_beam,fix16ToInt(shots->shot[ii].pos_x),fix16ToInt(shots->shot[ii].pos_y),TILE_ATTR(PAL1,0,FALSE,FALSE));
         SPR_setDepth(shots->shot[ii].sprite, SPR_MIN_DEPTH);
-//        shots->shot[ii].type.move = &en_spider_MvShot;
-        shots->shot[ii].parent = enemy;
+        shots->shot[ii].Action.move = &en_spider_MvShot;
         shots->en_shotsonscreen++;
         }
 }
@@ -66,34 +65,33 @@ void en_spider_changeVelocity(Enemy* enemy, Action_Arg vel_x, Action_Arg vel_y, 
     enemy->vel_y = vel_y.fix16;
 }
 
-void en_spider_MvShot(En_Shot* shot) {
+void en_spider_MvShot(En_Shot* shot, En_Shots* shots) {
     
     if ((shot->timer == 8) && (shot->pos_y <= (BOTTOM_EDGE - shot->height))) {
-        u16 ii = 0;
-        En_Shots *shots = EN_getShotsPtr();
-        if (shots->en_shotsonscreen < MAX_ENEMY_SHOTS) {
-            while (shots->shot[ii].status != DEAD) {
-                ii++;
-            }
-            shots->shot[ii].status = ALIVE;
-            
-            shots->shot[ii].pos_x = shot->pos_x+FIX16(8);
-            shots->shot[ii].pos_y = shot->pos_y+shot->height;
-            shots->shot[ii].width = FIX16(8);
-            shots->shot[ii].height = FIX16(32);
-            shots->shot[ii].health = 1;
-            shots->shot[ii].sprite = SPR_addSprite(&en_beam,fix16ToInt(shots->shot[ii].pos_x),fix16ToInt(shots->shot[ii].pos_y),TILE_ATTR(PAL1,0,FALSE,FALSE));
-            SPR_setDepth(shots->shot[ii].sprite, SPR_MIN_DEPTH);
-            shots->shot[ii].parent =  shot;
-            shots->shot[ii].Action.move = &en_spider_MvShot;
-            shots->en_shotsonscreen++;
-        }
-        
-        if (SPR_isVisible(shot->sprite, FALSE)) {
-            SPR_setVisibility(shot->sprite, HIDDEN);
-        } else {
-            SPR_setVisibility(shot->sprite, VISIBLE);
-        }
+        en_spider_shoot(shot,  (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0); //basically the shot shoots another one.
+    }
+    //        u16 ii = 0;
+    //        En_Shots *shots = EN_getShotsPtr();
+    //        if (shots->en_shotsonscreen < MAX_ENEMY_SHOTS) {
+    //            while (shots->shot[ii].status != DEAD) {
+    //                ii++;
+    //            }
+    //            shots->shot[ii].status = ALIVE;
+    //            shots->shot[ii].parent = shot;
+    //            shots->shot[ii].pos_x = shot->pos_x+FIX16(8);
+    //            shots->shot[ii].pos_y = shot->pos_y+shot->height;
+    //            shots->shot[ii].width = FIX16(8);
+    //            shots->shot[ii].height = FIX16(32);
+    //            shots->shot[ii].health = 1;
+    //            shots->shot[ii].sprite = SPR_addSprite(&en_beam,fix16ToInt(shots->shot[ii].pos_x),fix16ToInt(shots->shot[ii].pos_y),TILE_ATTR(PAL1,0,FALSE,FALSE));
+    //            SPR_setDepth(shots->shot[ii].sprite, SPR_MIN_DEPTH);
+    //            shots->shot[ii].Action.move = &en_spider_MvShot;
+    //            shots->en_shotsonscreen++;
+    //        }
+    if (SPR_isVisible(shot->sprite, FALSE)) { //flicker (for transparency)
+        SPR_setVisibility(shot->sprite, HIDDEN);
+    } else {
+        SPR_setVisibility(shot->sprite, VISIBLE);
     }
 };
 

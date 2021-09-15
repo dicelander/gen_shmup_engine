@@ -22,4 +22,6 @@ void en_spider_changeType(Enemy* spider, Action_Arg action, Action_Arg type, Act
 
 void en_spider_kill(Enemy* spider, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5);
 
+void en_spider_MvShot(En_Shot* shot);
+
 #endif /* en_spider_h */
