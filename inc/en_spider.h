@@ -22,6 +22,10 @@ void en_spider_changeType(Enemy* spider, Action_Arg action, Action_Arg type, Act
 
 void en_spider_kill(Enemy* spider, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5);
 
-void en_spider_MvShot(En_Shot* shot);
+void en_spider_mvShot(En_Shot* shot, En_Shots* shots);
+
+void en_spider_chargeShot(Enemy* spider, Action_Arg vel_x, Action_Arg vel_y, Action_Arg pos_x, Action_Arg pos_y, Action_Arg dir, Action_Arg mode);
+
+void en_spider_beginShot(Enemy* spider, Action_Arg vel_x, Action_Arg vel_y, Action_Arg pos_x, Action_Arg pos_y, Action_Arg dir, Action_Arg mode);
 
 #endif /* en_spider_h */
