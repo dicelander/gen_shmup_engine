@@ -26,7 +26,7 @@
 #include "entity.h"
 #include "player.h"
 
-typedef struct Enemy Enemy;
+typedef Entity Enemy;
 
 struct Behaviour;
 
@@ -46,12 +46,6 @@ typedef union Action_Arg {
 
 typedef void en_Action(Enemy* enemyptr, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5);
 
-struct en_type {
-    en_Action* move;
-    en_Action* explode;
-    en_Action* shoot;
-};
-
 typedef struct Behaviour {
     en_Action* const actions[MAX_ACTIONS];
     const u16 actionframes[MAX_ACTIONS];
@@ -63,25 +57,6 @@ typedef struct Behaviour {
     const union Action_Arg arg5[MAX_ACTIONS];
 } Behaviour;
 
-struct Enemy {
-    fix16 pos_x;
-    fix16 pos_y;
-    fix16 offset_x;
-    fix16 offset_y;
-    fix16 width;
-    fix16 height;
-    //other properties (needs organizing)
-    fix16 vel_x;
-    fix16 vel_y;
-    u16 direction;
-    s8 health;
-    u16 nextpatternstate;
-    u16 timer;
-    u16 status;
-    Sprite* sprite;
-    struct en_type type;
-    const struct Behaviour* pattern;
-};
 
 typedef struct Enemies {
     Enemy enemy[MAX_ENEMIES];

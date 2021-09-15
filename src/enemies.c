@@ -82,7 +82,7 @@ void EN_updateEnemies(Enemies *enemies){
                         enemies->enemy[ii].nextpatternstate++;
                         enemies->enemy[ii].timer = 0xFFFF;
                     }
-                    enemies->enemy[ii].type.move(&enemies->enemy[ii], (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0);
+                    enemies->enemy[ii].Action.move(&enemies->enemy[ii], (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0, (Action_Arg) (u16) 0);
                     enemies->enemy[ii].timer++;
                 } else if(enemies->enemy[ii].health <= 0) {
                     enemies->enemy[ii].status = EXPLOSION;

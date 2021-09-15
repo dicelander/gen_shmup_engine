@@ -34,7 +34,7 @@ void en_spider_spawn(Enemies* enemies, const u8 type, s16 pos_x, s16 pos_y, cons
         enemies->enemy[i].nextpatternstate = 0;
         enemies->enemy[i].timer = 0;
         enemies->enemy[i].pattern = behaviour;
-        enemies->enemy[i].type.move = &en_spider_move;
+        enemies->enemy[i].Action.move = &en_spider_move;
         enemies->enemiesOnScreen++;
     }
 }
@@ -119,7 +119,7 @@ void en_spider_moveDeAcc(Enemy* spider, Action_Arg vel_x, Action_Arg vel_y, Acti
         spider->vel_y += FIX16(-0.5);
     } else {
         spider->vel_y = FIX16(0);
-        spider->type.move = &en_spider_move;
+        spider->Action.move = &en_spider_move;
     }
     KLog_f1("vel_y: ", spider->vel_y);
     spider->pos_x += spider->vel_x;
@@ -128,7 +128,7 @@ void en_spider_moveDeAcc(Enemy* spider, Action_Arg vel_x, Action_Arg vel_y, Acti
 }
 
 void en_spider_changeType(Enemy* spider, Action_Arg action, Action_Arg type, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5) {
-    spider->type.move = &en_spider_moveDeAcc;
+    spider->Action.move = &en_spider_moveDeAcc;
     /*
     switch (action.u16) {
         case 0:

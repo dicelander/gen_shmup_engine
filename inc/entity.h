@@ -12,13 +12,6 @@
 
 typedef struct Entity Entity;
 
-typedef union Action_Arg {
-    fix16 fix16;
-    u16 u16;
-} Action_Arg;
-
-typedef void (*Action)(Entity* entity, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3);
-
 struct Entity {
     fix16 pos_x;
     fix16 pos_y;
@@ -32,10 +25,12 @@ struct Entity {
     fix16 vel_y;
     u16 direction;
     s8 health;
+    u16 nextpatternstate;
     u16 timer;
     u16 status;
     Sprite* sprite;
     Entity* parent;
+    const struct Behaviour* pattern;
     enum {player, shot, enemy} Type;
     struct {
         void (*move)();

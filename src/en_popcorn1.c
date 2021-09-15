@@ -35,7 +35,7 @@ void en_pc1_spawn(Enemies* enemies, const u8 type, s16 pos_x, s16 pos_y, const B
         enemies->enemy[i].nextpatternstate = 0;
         enemies->enemy[i].timer = 0;
         enemies->enemy[i].pattern = behaviour;
-        enemies->enemy[i].type.move = &en_pc1_move;
+        enemies->enemy[i].Action.move = &en_pc1_move;
         enemies->enemiesOnScreen++;
     }
 }
