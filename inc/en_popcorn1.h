@@ -21,4 +21,6 @@ void en_pc1_changePosition(Enemy* enemy, Action_Arg pos_x, Action_Arg pos_y, Act
 
 void en_pc1_shoot(Enemy* enemyptr, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5);
 
+void en_pc1_kill(Enemy* popcorn, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5);
+
 #endif /* en_popcorn1_h */

@@ -87,3 +87,10 @@ void en_pc1_shoot(Enemy* enemyptr, Action_Arg arg0, Action_Arg arg1, Action_Arg 
         shots->en_shotsonscreen++;
         }
 }
+
+void en_pc1_kill(Enemy* popcorn, Action_Arg arg0, Action_Arg arg1, Action_Arg arg2, Action_Arg arg3, Action_Arg arg4, Action_Arg arg5) {
+    popcorn->health = 0;
+    SPR_setVisibility(popcorn->sprite,HIDDEN);
+    SPR_releaseSprite(popcorn->sprite);
+    popcorn->status = DEAD;
+}
