@@ -119,7 +119,7 @@ void EN_killShot(En_Shot* e){
 void EN_moveShots(En_Shots *shots) {
     u16 i = 0;
     for (i = 0; i < MAX_ENEMY_SHOTS; i++) {
-        if(shots->shot[i].status == ALIVE) {
+        if(shots->shot[i].status != DEAD) {
             shots->shot[i].Action.move(&shots->shot[i], shots);
         }
     }

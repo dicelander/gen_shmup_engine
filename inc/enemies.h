@@ -10,7 +10,7 @@
 
 
 #define MAX_ENEMIES 15
-#define MAX_ACTIONS 30
+#define MAX_ACTIONS 60
 #define MAX_ENEMY_SHOTS 50
 #define ENEMY_DOWN 0
 #define ENEMY_DOWN_RIGHT 1
