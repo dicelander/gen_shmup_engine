@@ -9,3 +9,10 @@ SPRITE  en_beam "gfx/en_beam.png"       1   4   FAST    0
 SPRITE  explos  "gfx/explosion.png"     2   2   FAST    1
 IMAGE   bckgrnd "tiles/space.png"       FAST
 IMAGE   beam    "tiles/beam.png"        FAST
+TILESET level_tileset "tiles/map.png" BEST
+MAP level_map "tiles/map.png" level_tileset BEST
+PALETTE palette_all "tiles/map.png"
+TILESET cloud_tileset "tiles/mapc.png" BEST
+MAP cloud_map "tiles/mapc.png" cloud_tileset BEST
+
+IMAGE   boss1   "img/boss1.png"         FAST
